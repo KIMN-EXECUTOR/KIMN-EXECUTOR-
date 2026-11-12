@@ -1,0 +1,284 @@
+-- Services
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+
+local LocalPlayer = Players.LocalPlayer
+
+-- Configuration
+local VALID_KEY = "Key19771"
+local KEY_LINK = "https://bstshrt.com/u/https-dashboard-kimnexecutor"
+
+-- Clean up existing UI if re-executed
+local existingUI = CoreGui:FindFirstChild("KimnExecutorUI")
+if existingUI then
+    existingUI:Destroy()
+end
+
+-- Create ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "KimnExecutorUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+pcall(function()
+    ScreenGui.Parent = CoreGui
+end)
+if not ScreenGui.Parent then
+    ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end
+
+--------------------------------------------------------------------------------
+-- 1. INTRO SCREEN (3D Fade In & Fade Out Effect)
+--------------------------------------------------------------------------------
+local IntroHolder = Instance.new("Frame")
+IntroHolder.Name = "IntroHolder"
+IntroHolder.Size = UDim2.new(1, 0, 1, 0)
+IntroHolder.BackgroundTransparency = 1
+IntroHolder.Parent = ScreenGui
+
+-- 3D layered text effect (Shadow layer behind + Main text on top)
+local IntroShadow = Instance.new("TextLabel")
+IntroShadow.Name = "IntroShadow"
+IntroShadow.Size = UDim2.new(1, 0, 0, 80)
+IntroShadow.Position = UDim2.new(0, 3, 0.5, -37) -- Slight offset for 3D depth
+IntroShadow.BackgroundTransparency = 1
+IntroShadow.Text = "KIMN EXECUTOR"
+IntroShadow.TextColor3 = Color3.fromRGB(15, 15, 15)
+IntroShadow.TextTransparency = 1
+IntroShadow.TextSize = 36
+IntroShadow.Font = Enum.Font.GothamBlack
+IntroShadow.Parent = IntroHolder
+
+local IntroText = Instance.new("TextLabel")
+IntroText.Name = "IntroText"
+IntroText.Size = UDim2.new(1, 0, 0, 80)
+IntroText.Position = UDim2.new(0, 0, 0.5, -40)
+IntroText.BackgroundTransparency = 1
+IntroText.Text = "KIMN EXECUTOR"
+IntroText.TextColor3 = Color3.fromRGB(255, 255, 255)
+IntroText.TextTransparency = 1
+IntroText.TextSize = 36
+IntroText.Font = Enum.Font.GothamBlack
+IntroText.Parent = IntroHolder
+
+--------------------------------------------------------------------------------
+-- 2. MAIN KEY BOX (Right Side, Jet Black)
+--------------------------------------------------------------------------------
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "KeyBox"
+MainFrame.Size = UDim2.new(0, 310, 0, 225)
+-- Start slightly off-screen to the right for a slide-in effect
+MainFrame.Position = UDim2.new(1, 40, 0.5, -112)
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BackgroundTransparency = 1
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(30, 30, 30)
+MainStroke.Transparency = 1
+MainStroke.Thickness = 1.2
+MainStroke.Parent = MainFrame
+
+-- Title Bar
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Name = "Title"
+TitleLabel.Size = UDim2.new(1, -24, 0, 28)
+TitleLabel.Position = UDim2.new(0, 14, 0, 12)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "KIMN EXECUTOR"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextTransparency = 1
+TitleLabel.TextSize = 18
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.Parent = MainFrame
+
+-- Key Input Box
+local KeyInput = Instance.new("TextBox")
+KeyInput.Name = "KeyInput"
+KeyInput.Size = UDim2.new(1, -28, 0, 38)
+KeyInput.Position = UDim2.new(0, 14, 0, 48)
+KeyInput.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+KeyInput.BackgroundTransparency = 1
+KeyInput.Text = ""
+KeyInput.PlaceholderText = "Type key here..."
+KeyInput.PlaceholderColor3 = Color3.fromRGB(90, 90, 90)
+KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyInput.TextTransparency = 1
+KeyInput.TextSize = 13
+KeyInput.Font = Enum.Font.GothamMedium
+KeyInput.ClearTextOnFocus = false
+KeyInput.Parent = MainFrame
+
+local InputCorner = Instance.new("UICorner")
+InputCorner.CornerRadius = UDim.new(0, 8)
+InputCorner.Parent = KeyInput
+
+local InputStroke = Instance.new("UIStroke")
+InputStroke.Color = Color3.fromRGB(35, 35, 35)
+InputStroke.Transparency = 1
+InputStroke.Thickness = 1
+InputStroke.Parent = KeyInput
+
+-- Status Message Label
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Name = "Status"
+StatusLabel.Size = UDim2.new(1, -28, 0, 18)
+StatusLabel.Position = UDim2.new(0, 14, 0, 90)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Text = ""
+StatusLabel.TextColor3 = Color3.fromRGB(235, 85, 85)
+StatusLabel.TextTransparency = 1
+StatusLabel.TextSize = 11
+StatusLabel.Font = Enum.Font.GothamMedium
+StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+StatusLabel.Parent = MainFrame
+
+-- Submit Key Button
+local SubmitBtn = Instance.new("TextButton")
+SubmitBtn.Name = "SubmitButton"
+SubmitBtn.Size = UDim2.new(1, -28, 0, 38)
+SubmitBtn.Position = UDim2.new(0, 14, 0, 114)
+SubmitBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+SubmitBtn.BackgroundTransparency = 1
+SubmitBtn.Text = "Submit Key"
+SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SubmitBtn.TextTransparency = 1
+SubmitBtn.TextSize = 13
+SubmitBtn.Font = Enum.Font.GothamBold
+SubmitBtn.AutoButtonColor = false
+SubmitBtn.Parent = MainFrame
+
+local SubmitCorner = Instance.new("UICorner")
+SubmitCorner.CornerRadius = UDim.new(0, 8)
+SubmitCorner.Parent = SubmitBtn
+
+local SubmitStroke = Instance.new("UIStroke")
+SubmitStroke.Color = Color3.fromRGB(45, 45, 45)
+SubmitStroke.Transparency = 1
+SubmitStroke.Thickness = 1
+SubmitStroke.Parent = SubmitBtn
+
+-- Copy Link Here Button
+local CopyLinkBtn = Instance.new("TextButton")
+CopyLinkBtn.Name = "CopyLinkButton"
+CopyLinkBtn.Size = UDim2.new(1, -28, 0, 38)
+CopyLinkBtn.Position = UDim2.new(0, 14, 0, 162)
+CopyLinkBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+CopyLinkBtn.BackgroundTransparency = 1
+CopyLinkBtn.Text = "Copy Link Here"
+CopyLinkBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+CopyLinkBtn.TextTransparency = 1
+CopyLinkBtn.TextSize = 13
+CopyLinkBtn.Font = Enum.Font.GothamBold
+CopyLinkBtn.AutoButtonColor = false
+CopyLinkBtn.Parent = MainFrame
+
+local CopyLinkCorner = Instance.new("UICorner")
+CopyLinkCorner.CornerRadius = UDim.new(0, 8)
+CopyLinkCorner.Parent = CopyLinkBtn
+
+local CopyLinkStroke = Instance.new("UIStroke")
+CopyLinkStroke.Color = Color3.fromRGB(45, 45, 45)
+CopyLinkStroke.Transparency = 1
+CopyLinkStroke.Thickness = 1
+CopyLinkStroke.Parent = CopyLinkBtn
+
+-- Close Button
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Name = "CloseButton"
+CloseBtn.Size = UDim2.new(0, 24, 0, 24)
+CloseBtn.Position = UDim2.new(1, -34, 0, 14)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Text = "×"
+CloseBtn.TextColor3 = Color3.fromRGB(170, 170, 170)
+CloseBtn.TextTransparency = 1
+CloseBtn.TextSize = 16
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Parent = MainFrame
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(1, 0)
+CloseCorner.Parent = CloseBtn
+
+--------------------------------------------------------------------------------
+-- 3. ANIMATION SEQUENCE (Intro Fade In/Out -> Key Box Slide In)
+--------------------------------------------------------------------------------
+task.spawn(function()
+    local tweenInfoFadeIn = TweenInfo.new(0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenInfoFadeOut = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+
+    -- Step 1: Fade In Intro Text
+    TweenService:Create(IntroText, tweenInfoFadeIn, {TextTransparency = 0}):Play()
+    TweenService:Create(IntroShadow, tweenInfoFadeIn, {TextTransparency = 0}):Play()
+    task.wait(1.4)
+
+    -- Step 2: Fade Out Intro Text
+    TweenService:Create(IntroText, tweenInfoFadeOut, {TextTransparency = 1}):Play()
+    TweenService:Create(IntroShadow, tweenInfoFadeOut, {TextTransparency = 1}):Play()
+    task.wait(0.7)
+    IntroHolder:Destroy()
+
+    -- Step 3: Slide & Fade In Main Key Box
+    MainFrame.Position = UDim2.new(1, 40, 0.5, -112)
+    
+    local boxTweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    
+    TweenService:Create(MainFrame, boxTweenInfo, {
+        Position = UDim2.new(0.97, -310, 0.5, -112),
+        BackgroundTransparency = 0
+    }):Play()
+    
+    TweenService:Create(MainStroke, boxTweenInfo, {Transparency = 0}):Play()
+    TweenService:Create(TitleLabel, boxTweenInfo, {TextTransparency = 0}):Play()
+    TweenService:Create(KeyInput, boxTweenInfo, {BackgroundTransparency = 0, TextTransparency = 0, PlaceholderColor3 = Color3.fromRGB(130, 130, 130)}):Play()
+    TweenService:Create(InputStroke, boxTweenInfo, {Transparency = 0}):Play()
+    TweenService:Create(StatusLabel, boxTweenInfo, {TextTransparency = 0}):Play()
+    TweenService:Create(SubmitBtn, boxTweenInfo, {BackgroundTransparency = 0, TextTransparency = 0}):Play()
+    TweenService:Create(SubmitStroke, boxTweenInfo, {Transparency = 0}):Play()
+    TweenService:Create(CopyLinkBtn, boxTweenInfo, {BackgroundTransparency = 0, TextTransparency = 0}):Play()
+    TweenService:Create(CopyLinkStroke, boxTweenInfo, {Transparency = 0}):Play()
+    TweenService:Create(CloseBtn, boxTweenInfo, {BackgroundTransparency = 0, TextTransparency = 0}):Play()
+end)
+
+--------------------------------------------------------------------------------
+-- 4. BUTTON FUNCTIONALITY
+--------------------------------------------------------------------------------
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+CopyLinkBtn.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(KEY_LINK)
+        StatusLabel.TextColor3 = Color3.fromRGB(100, 210, 130)
+        StatusLabel.Text = "Link copied to clipboard!"
+    else
+        StatusLabel.TextColor3 = Color3.fromRGB(235, 190, 75)
+        StatusLabel.Text = "Clipboard not supported on this client."
+    end
+end)
+
+SubmitBtn.MouseButton1Click:Connect(function()
+    if KeyInput.Text == VALID_KEY then
+        StatusLabel.TextColor3 = Color3.fromRGB(100, 210, 130)
+        StatusLabel.Text = "Key verified! Loading Kimn Executor..."
+        task.wait(0.8)
+        ScreenGui:Destroy()
+        
+        -- PLACE YOUR MAIN EXECUTOR / SCRIPT HUB CODE BELOW THIS LINE
+        print("Kimn Executor unlocked!")
+    else
+        StatusLabel.TextColor3 = Color3.fromRGB(235, 85, 85)
+        StatusLabel.Text = "Invalid key. Please try again."
+    end
+end)
